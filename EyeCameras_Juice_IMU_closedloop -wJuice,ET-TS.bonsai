@@ -1,0 +1,4406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.8.2"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
+                 xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
+                 xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
+                 xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
+                 xmlns:num="clr-namespace:Bonsai.Numerics;assembly=Bonsai.Numerics"
+                 xmlns:port="clr-namespace:Bonsai.IO.Ports;assembly=Bonsai.System"
+                 xmlns:ard="clr-namespace:Bonsai.Arduino;assembly=Bonsai.Arduino"
+                 xmlns:ipy="clr-namespace:Bonsai.Scripting.IronPython;assembly=Bonsai.Scripting.IronPython"
+                 xmlns:gl="clr-namespace:Bonsai.Shaders;assembly=Bonsai.Shaders"
+                 xmlns:res="clr-namespace:Bonsai.Resources;assembly=Bonsai.System"
+                 xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
+                 xmlns:dsp="clr-namespace:Bonsai.Dsp;assembly=Bonsai.Dsp"
+                 xmlns:viz="clr-namespace:Bonsai.Design.Visualizers;assembly=Bonsai.Design.Visualizers"
+                 xmlns:py="clr-namespace:Bonsai.Scripting.Python;assembly=Bonsai.Scripting.Python"
+                 xmlns:gli="clr-namespace:Bonsai.Shaders.Input;assembly=Bonsai.Shaders"
+                 xmlns:p1="clr-namespace:OpenCV.Net;assembly=OpenCV.Net"
+                 xmlns:al="clr-namespace:Bonsai.Audio;assembly=Bonsai.Audio"
+                 xmlns:spk="clr-namespace:Bonsai.Spinnaker;assembly=Bonsai.Spinnaker"
+                 xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                 xmlns:ffmpeg="clr-namespace:Bonsai.FFmpeg;assembly=Bonsai.FFmpeg"
+                 xmlns:dlc="clr-namespace:Bonsai.DeepLabCut;assembly=Bonsai.DeepLabCut"
+                 xmlns="https://bonsai-rx.org/2018/workflow">
+  <Workflow>
+    <Nodes>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Parameters</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="StringProperty">
+                <Value>Rat022</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>&lt;&lt;Enter AnimalID RatXXX OR TSHXXX</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}_Parameters_.csv</Format>
+              <Selector />
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="scr:ExpressionTransform">
+                <scr:Expression>new(
+it.Item1 as AnimalID,
+it.Item2 as EyeMovementMagThresh,
+it.Item3 as EyeMovementTimeWindow,
+it.Item4 as Acceptance_Angle,
+it.Item5 as TrialStartGreenCircleDur,
+it.Item6 as StimStartWhiteCircleDur)</scr:Expression>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="io:CsvWriter">
+                <io:FileName>Tsh01_Parameters_.csv</io:FileName>
+                <io:Append>false</io:Append>
+                <io:Overwrite>false</io:Overwrite>
+                <io:Suffix>Timestamp</io:Suffix>
+                <io:IncludeHeader>true</io:IncludeHeader>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_H_L_.avi</Format>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>ID_HeadLEFT</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_E_L_.avi</Format>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>ID_EyeLEFT</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_H_R_.avi</Format>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>ID_HeadRIGHT</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_E_R_.avi</Format>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>ID_EyeRIGHT</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>AnimalID</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_IMU_.csv</Format>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>ID_IMU</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_Saccades_L_.csv</Format>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>Saccades_L</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="DoubleProperty">
+                <Value>100</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>VDThreshold</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="DoubleProperty">
+                <Value>15</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>VDDIfferenceThreshold</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>MButton ShiftKey Capital CapsLock D P T Control</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>StartTrial</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>LButton RButton Cancel ShiftKey ControlKey Menu Pause A B C P Q R S Control</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>StartSession</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="rx:PublishSubject">
+                <Name>StartSession</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>10</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>EyeMovementMagThresh</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="DoubleProperty">
+                <Value>120</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>AcceptanceAngle</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="TimeSpanProperty">
+                <Value>PT1S</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>StimStartWhiteCircleDur</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="TimeSpanProperty">
+                <Value>PT1S</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>TrialStartGreenCircleDur</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TrialStartGreenCircleDur</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>StimStartWhiteCircleDur</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="TimeSpanProperty">
+                <Value>PT0S</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:CombineLatest" />
+            </Expression>
+            <Expression xsi:type="Add" />
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>EyeMovementEnd</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TrialStartGreenCircleDur</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>StimStartWhiteCircleDur</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:CombineLatest" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Add">
+              <Operand xsi:type="TimeSpanProperty">
+                <Value>PT0S</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>EyeMovementBegin</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="num:CreateRandom">
+                <num:Seed>1</num:Seed>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>rand2</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="num:CreateRandom">
+                <num:Seed>2</num:Seed>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>rand</Name>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="1" To="4" Label="Source1" />
+            <Edge From="1" To="8" Label="Source1" />
+            <Edge From="1" To="10" Label="Source1" />
+            <Edge From="1" To="12" Label="Source1" />
+            <Edge From="1" To="14" Label="Source1" />
+            <Edge From="1" To="16" Label="Source1" />
+            <Edge From="1" To="17" Label="Source1" />
+            <Edge From="1" To="19" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="6" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="5" To="6" Label="Source2" />
+            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="10" To="11" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="27" To="28" Label="Source1" />
+            <Edge From="28" To="29" Label="Source1" />
+            <Edge From="30" To="31" Label="Source1" />
+            <Edge From="32" To="33" Label="Source1" />
+            <Edge From="34" To="35" Label="Source1" />
+            <Edge From="36" To="37" Label="Source1" />
+            <Edge From="38" To="41" Label="Source1" />
+            <Edge From="39" To="41" Label="Source2" />
+            <Edge From="40" To="41" Label="Source3" />
+            <Edge From="41" To="42" Label="Source1" />
+            <Edge From="42" To="43" Label="Source1" />
+            <Edge From="44" To="46" Label="Source1" />
+            <Edge From="45" To="46" Label="Source2" />
+            <Edge From="46" To="47" Label="Source1" />
+            <Edge From="47" To="48" Label="Source1" />
+            <Edge From="49" To="50" Label="Source1" />
+            <Edge From="51" To="52" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="port:CreateSerialPort">
+          <port:Name>Sensor </port:Name>
+          <port:PortName>COM8</port:PortName>
+          <port:BaudRate>57600</port:BaudRate>
+          <port:NewLine>\r\n</port:NewLine>
+          <port:Parity>None</port:Parity>
+          <port:ParityReplace>63</port:ParityReplace>
+          <port:DataBits>8</port:DataBits>
+          <port:StopBits>One</port:StopBits>
+          <port:Handshake>None</port:Handshake>
+          <port:DiscardNull>false</port:DiscardNull>
+          <port:DtrEnable>false</port:DtrEnable>
+          <port:RtsEnable>false</port:RtsEnable>
+          <port:ReadBufferSize>4096</port:ReadBufferSize>
+          <port:WriteBufferSize>2048</port:WriteBufferSize>
+          <port:ReceivedBytesThreshold>1</port:ReceivedBytesThreshold>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="port:CreateSerialPort">
+          <port:Name>IMU</port:Name>
+          <port:PortName>COM4</port:PortName>
+          <port:BaudRate>115200</port:BaudRate>
+          <port:NewLine>\r\n</port:NewLine>
+          <port:Parity>None</port:Parity>
+          <port:ParityReplace>63</port:ParityReplace>
+          <port:DataBits>8</port:DataBits>
+          <port:StopBits>One</port:StopBits>
+          <port:Handshake>None</port:Handshake>
+          <port:DiscardNull>false</port:DiscardNull>
+          <port:DtrEnable>false</port:DtrEnable>
+          <port:RtsEnable>false</port:RtsEnable>
+          <port:ReadBufferSize>4096</port:ReadBufferSize>
+          <port:WriteBufferSize>2048</port:WriteBufferSize>
+          <port:ReceivedBytesThreshold>1</port:ReceivedBytesThreshold>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="ard:CreateArduino">
+          <ard:Name>Arduino_SyringePump</ard:Name>
+          <ard:PortName>COM3</ard:PortName>
+          <ard:BaudRate>57600</ard:BaudRate>
+          <ard:SamplingInterval>19</ard:SamplingInterval>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>TTL + SyringePump (Ctrl+T for TTL) (Ctrl+J for juice)</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>RButton Back LineFeed B H J Control</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>false</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Delay">
+                <rx:DueTime>PT0.1S</rx:DueTime>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>true</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Merge" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="port:SerialReadLine">
+                <port:PortName>Sensor </port:PortName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>CheckLick</ipy:Name>
+              <ipy:Script>@returns(bool)
+def process(value):
+  output=value[0:2]
+  if output=='Lx':
+    output_bool=True
+  else:
+    output_bool=False
+  return output_bool</ipy:Script>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+              <Format xsi:nil="true" />
+              <Selector xsi:nil="true" />
+              <Name>Lick</Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>Licked</Name>
+              <Description />
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>false</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Delay">
+                <rx:DueTime>PT0.1S</rx:DueTime>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>true</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Merge" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Merge" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="ard:DigitalOutput">
+                <ard:PortName>Arduino_SyringePump</ard:PortName>
+                <ard:Pin>8</ard:Pin>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+              <Format />
+              <Selector xsi:nil="true" />
+              <Name>Juice</Name>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TTL Generation</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>StartTrial</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:ElementIndex" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Index</Selector>
+                  </Expression>
+                  <Expression xsi:type="ipy:PythonTransform">
+                    <ipy:Script>@returns(bool)
+def process(value):
+  if (value &amp; 1 == 1):
+      return False
+  else:
+      return True</ipy:Script>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="ard:DigitalOutput">
+                      <ard:PortName>Arduino_SyringePump</ard:PortName>
+                      <ard:Pin>2</ard:Pin>
+                    </Combinator>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>LeftPupil</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Right Pupil</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>X</Selector>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Y</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Skip">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AP Axis</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>BlinkState</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Saccade Logging</ipy:Name>
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+from System import Tuple
+@returns(Tuple[bool,float,float])
+def process(value):
+  pre_x,pre_y = value.Item1.Item1
+  x,y         = value.Item1.Item2
+  dx = x - pre_x
+  dy = y - pre_y
+  
+  ax = value.Item2[0].X
+  ay = value.Item2[0].Y
+  px = value.Item2[1].X
+  py = value.Item2[1].Y
+  
+  xx = px-ax
+  yy = py-ay
+  magnitude = math.sqrt(dx**2+dy**2)
+  mag_axis =  math.sqrt(xx**2+yy**2)
+  try:
+    direction = math.acos((dx*xx+dy*yy)/(magnitude*mag_axis))
+    direction = math.degrees(direction)
+  except: 
+#ValueError or ZeroDivisionError:
+    direction = float("nan")
+  if (magnitude&gt;=5):
+    return Tuple.Create(True,magnitude,direction)
+  else:
+    return Tuple.Create(False,magnitude,direction)</ipy:Script>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>Header</scr:Name>
+              <scr:Expression>new(
+it.Item1 as Saccade,
+it.Item2 as Magnitude,
+it.Item3 as Direction
+
+)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Saccades_L</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="io:CsvWriter">
+              <io:FileName>Tsh001\\Tsh001_Saccades_L_.csv</io:FileName>
+              <io:Append>false</io:Append>
+              <io:Overwrite>false</io:Overwrite>
+              <io:Suffix>Timestamp</io:Suffix>
+              <io:IncludeHeader>false</io:IncludeHeader>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>EM</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>EyeMovementMagThresh</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:CombineLatest" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="ipy:PythonTransform">
+                <ipy:Name>EM-Threshold  Comparison</ipy:Name>
+                <ipy:Script>@returns(bool)
+def process(value):
+  magnitude = value.Item1
+  threshold = value.Item2
+  if (magnitude&gt;=threshold):
+      return True
+  else:
+      return False</ipy:Script>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>BlinkState</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:CombineLatest" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="ipy:PythonTransform">
+                <ipy:Name>SaccadeDetection</ipy:Name>
+                <ipy:Script>@returns(bool)
+def process(value):
+  return (value.Item1 &amp; ~(value.Item2))</ipy:Script>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+                <Format xsi:nil="true" />
+                <Selector xsi:nil="true" />
+                <Name>saccade</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="ard:DigitalOutput">
+                  <ard:PortName>Arduino_SyringePump</ard:PortName>
+                  <ard:Pin>8</ard:Pin>
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+                <Format />
+                <Selector xsi:nil="true" />
+                <Name>Juice</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>LeftPupil</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Right Pupil</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>X</Selector>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Y</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Skip">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Eye Movement</ipy:Name>
+              <ipy:Script>import math
+@returns(float)
+def process(value):
+  pre_x,pre_y = value.Item1
+  x,y         = value.Item2
+  dx = x - pre_x
+  dy = y - pre_y
+  magnitude = math.sqrt(dx**2+dy**2)
+  return magnitude</ipy:Script>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>EM</Name>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="0" To="3" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="4" Label="Source1" />
+            <Edge From="3" To="4" Label="Source2" />
+            <Edge From="4" To="13" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="8" To="11" Label="Source1" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="12" Label="Source1" />
+            <Edge From="11" To="12" Label="Source2" />
+            <Edge From="12" To="13" Label="Source2" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="18" To="20" Label="Source1" />
+            <Edge From="18" To="21" Label="Source1" />
+            <Edge From="19" To="20" Label="Source2" />
+            <Edge From="19" To="21" Label="Source2" />
+            <Edge From="20" To="22" Label="Source1" />
+            <Edge From="21" To="22" Label="Source2" />
+            <Edge From="22" To="23" Label="Source1" />
+            <Edge From="22" To="24" Label="Source2" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="27" Label="Source1" />
+            <Edge From="25" To="27" Label="Source2" />
+            <Edge From="26" To="27" Label="Source3" />
+            <Edge From="27" To="28" Label="Source1" />
+            <Edge From="28" To="29" Label="Source1" />
+            <Edge From="29" To="32" Label="Source1" />
+            <Edge From="30" To="31" Label="Source1" />
+            <Edge From="31" To="32" Label="Source2" />
+            <Edge From="33" To="35" Label="Source1" />
+            <Edge From="34" To="35" Label="Source2" />
+            <Edge From="35" To="36" Label="Source1" />
+            <Edge From="36" To="38" Label="Source1" />
+            <Edge From="37" To="38" Label="Source2" />
+            <Edge From="38" To="39" Label="Source1" />
+            <Edge From="39" To="40" Label="Source1" />
+            <Edge From="40" To="41" Label="Source1" />
+            <Edge From="41" To="42" Label="Source1" />
+            <Edge From="43" To="45" Label="Source1" />
+            <Edge From="43" To="46" Label="Source1" />
+            <Edge From="44" To="45" Label="Source2" />
+            <Edge From="44" To="46" Label="Source2" />
+            <Edge From="45" To="47" Label="Source1" />
+            <Edge From="46" To="47" Label="Source2" />
+            <Edge From="47" To="48" Label="Source1" />
+            <Edge From="47" To="49" Label="Source2" />
+            <Edge From="48" To="49" Label="Source1" />
+            <Edge From="49" To="50" Label="Source1" />
+            <Edge From="50" To="51" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>BonVision Setup</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="gl:CreateWindow">
+                <gl:Width>1920</gl:Width>
+                <gl:Height>1080</gl:Height>
+                <gl:VSync>On</gl:VSync>
+                <gl:SwapSync>false</gl:SwapSync>
+                <gl:ClearColor>Black</gl:ClearColor>
+                <gl:ClearMask>DepthBufferBit ColorBufferBit</gl:ClearMask>
+                <gl:CursorVisible>true</gl:CursorVisible>
+                <gl:Location xsi:nil="true" />
+                <gl:WindowBorder>Resizable</gl:WindowBorder>
+                <gl:WindowState>Fullscreen</gl:WindowState>
+                <gl:DisplayDevice>Second</gl:DisplayDevice>
+                <gl:TargetRenderFrequency>60</gl:TargetRenderFrequency>
+                <gl:TargetUpdateFrequency xsi:nil="true" />
+                <gl:RenderState />
+                <gl:GraphicsMode>
+                  <gl:ColorFormat>
+                    <gl:Red>8</gl:Red>
+                    <gl:Green>8</gl:Green>
+                    <gl:Blue>8</gl:Blue>
+                    <gl:Alpha>8</gl:Alpha>
+                  </gl:ColorFormat>
+                  <gl:Depth>16</gl:Depth>
+                  <gl:Stencil>0</gl:Stencil>
+                  <gl:Samples>0</gl:Samples>
+                  <gl:AccumulatorFormat>
+                    <gl:Red>0</gl:Red>
+                    <gl:Green>0</gl:Green>
+                    <gl:Blue>0</gl:Blue>
+                    <gl:Alpha>0</gl:Alpha>
+                  </gl:AccumulatorFormat>
+                  <gl:Buffers>2</gl:Buffers>
+                  <gl:Stereo>false</gl:Stereo>
+                </gl:GraphicsMode>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.BonVisionResources.bonsai" />
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="res:LoadResources" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="gl:RenderFrame" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TTL</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:SubscribeWhen" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Sample" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_FramesLogger_.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>BonsaiFrames</Name>
+              <Append>true</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_FramesLogger_.csv</FileName>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+              <Format />
+              <Selector xsi:nil="true" />
+              <Name>BonsaiFrames</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Environment.NormalizedView.bonsai" />
+            <Expression xsi:type="SubscribeSubject">
+              <Name>StartSession</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:SkipUntil" />
+            </Expression>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>Draw</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_CameraLogger_.csv</Format>
+              <Selector />
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>EyeCamera</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_CameraLogger_.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_JuiceLogger_.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>Juice</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_JuiceLogger_.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_Lick_.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>Lick</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_Lick_.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_PupilL_.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>saccade</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_PupilL_.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_PupilR_.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>saccade_R</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_PupilR_.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_vstim_cue_.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>cue</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_vstim_cue_.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_vstim_go_.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>go</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_vstim_go_.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_ellipse_center_XY_L.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>Center_L</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_ellipse_center_XY_L.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_origin_of_eyecoordinate_L.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>Origin_L</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_origin_of_eyecoordinate_L.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_ellipse_center_XY_R.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>Center_R</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_ellipse_center_XY_R.csv</FileName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AnimalID</Name>
+            </Expression>
+            <Expression xsi:type="Format">
+              <Format>{0}\\{0}_origin_of_eyecoordinate_R.csv</Format>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.FrameEventLogger.bonsai">
+              <Name>Origin_R</Name>
+              <Append>false</Append>
+              <Overwrite>false</Overwrite>
+              <Suffix>Timestamp</Suffix>
+              <FileName>Tsh001\\Tsh001_origin_of_eyecoordinate_R.csv</FileName>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="3" To="5" Label="Source1" />
+            <Edge From="4" To="5" Label="Source2" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="10" Label="Source1" />
+            <Edge From="6" To="19" Label="Source1" />
+            <Edge From="6" To="23" Label="Source1" />
+            <Edge From="6" To="27" Label="Source1" />
+            <Edge From="6" To="31" Label="Source1" />
+            <Edge From="6" To="35" Label="Source1" />
+            <Edge From="6" To="39" Label="Source1" />
+            <Edge From="6" To="43" Label="Source1" />
+            <Edge From="6" To="47" Label="Source1" />
+            <Edge From="6" To="51" Label="Source1" />
+            <Edge From="6" To="55" Label="Source1" />
+            <Edge From="6" To="59" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="9" To="10" Label="Source2" />
+            <Edge From="10" To="11" Label="Source1" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="14" Label="Source1" />
+            <Edge From="13" To="14" Label="Source2" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="18" To="19" Label="Source2" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="22" To="23" Label="Source2" />
+            <Edge From="24" To="25" Label="Source1" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="27" Label="Source2" />
+            <Edge From="28" To="29" Label="Source1" />
+            <Edge From="29" To="30" Label="Source1" />
+            <Edge From="30" To="31" Label="Source2" />
+            <Edge From="32" To="33" Label="Source1" />
+            <Edge From="33" To="34" Label="Source1" />
+            <Edge From="34" To="35" Label="Source2" />
+            <Edge From="36" To="37" Label="Source1" />
+            <Edge From="37" To="38" Label="Source1" />
+            <Edge From="38" To="39" Label="Source2" />
+            <Edge From="40" To="41" Label="Source1" />
+            <Edge From="41" To="42" Label="Source1" />
+            <Edge From="42" To="43" Label="Source2" />
+            <Edge From="44" To="45" Label="Source1" />
+            <Edge From="45" To="46" Label="Source1" />
+            <Edge From="46" To="47" Label="Source2" />
+            <Edge From="48" To="49" Label="Source1" />
+            <Edge From="49" To="50" Label="Source1" />
+            <Edge From="50" To="51" Label="Source2" />
+            <Edge From="52" To="53" Label="Source1" />
+            <Edge From="53" To="54" Label="Source1" />
+            <Edge From="54" To="55" Label="Source2" />
+            <Edge From="56" To="57" Label="Source1" />
+            <Edge From="57" To="58" Label="Source1" />
+            <Edge From="58" To="59" Label="Source2" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="GroupWorkflow">
+          <Name>LED_Sync</Name>
+          <Workflow>
+            <Nodes>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>CameraLeft</Name>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="cv:Crop">
+                  <cv:RegionOfInterest>
+                    <cv:X>1625</cv:X>
+                    <cv:Y>34</cv:Y>
+                    <cv:Width>275</cv:Width>
+                    <cv:Height>332</cv:Height>
+                  </cv:RegionOfInterest>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="cv:Grayscale" />
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="cv:Threshold">
+                  <cv:ThresholdValue>100</cv:ThresholdValue>
+                  <cv:MaxValue>255</cv:MaxValue>
+                  <cv:ThresholdType>Binary</cv:ThresholdType>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="dsp:Sum" />
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Val0</Selector>
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>CameraRight</Name>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="cv:Crop">
+                  <cv:RegionOfInterest>
+                    <cv:X>972</cv:X>
+                    <cv:Y>34</cv:Y>
+                    <cv:Width>275</cv:Width>
+                    <cv:Height>332</cv:Height>
+                  </cv:RegionOfInterest>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="cv:Grayscale" />
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="cv:Threshold">
+                  <cv:ThresholdValue>100</cv:ThresholdValue>
+                  <cv:MaxValue>255</cv:MaxValue>
+                  <cv:ThresholdType>Binary</cv:ThresholdType>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="dsp:Sum" />
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Val0</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:CombineLatest" />
+              </Expression>
+              <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+                <Format xsi:nil="true" />
+                <Selector xsi:nil="true" />
+                <Name>LED</Name>
+              </Expression>
+              <Expression xsi:type="viz:RollingGraphBuilder">
+                <viz:SymbolType>None</viz:SymbolType>
+                <viz:LineWidth>1</viz:LineWidth>
+                <viz:Capacity>300</viz:Capacity>
+                <viz:Min xsi:nil="true" />
+                <viz:Max xsi:nil="true" />
+              </Expression>
+              <Expression xsi:type="WorkflowOutput" />
+            </Nodes>
+            <Edges>
+              <Edge From="0" To="1" Label="Source1" />
+              <Edge From="1" To="2" Label="Source1" />
+              <Edge From="2" To="3" Label="Source1" />
+              <Edge From="3" To="4" Label="Source1" />
+              <Edge From="4" To="5" Label="Source1" />
+              <Edge From="5" To="12" Label="Source1" />
+              <Edge From="6" To="7" Label="Source1" />
+              <Edge From="7" To="8" Label="Source1" />
+              <Edge From="8" To="9" Label="Source1" />
+              <Edge From="9" To="10" Label="Source1" />
+              <Edge From="10" To="11" Label="Source1" />
+              <Edge From="11" To="12" Label="Source2" />
+              <Edge From="12" To="13" Label="Source1" />
+              <Edge From="13" To="14" Label="Source1" />
+              <Edge From="14" To="15" Label="Source1" />
+            </Edges>
+          </Workflow>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="GroupWorkflow">
+          <Name>IMU_old</Name>
+          <Workflow>
+            <Nodes>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="Combinator">
+                  <Combinator xsi:type="port:SerialRead">
+                    <port:PortName>IMU</port:PortName>
+                    <port:Count>24</port:Count>
+                  </Combinator>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="ipy:PythonTransform">
+                  <ipy:Name>ParseSerialData</ipy:Name>
+                  <ipy:Script>import struct
+from System import Tuple
+from System import UInt32
+class arduino_packet:
+  def __init__(self,a_x=0,a_y=0,a_z=0,g_x=0,g_y=0,g_z=0,m_x=0,m_y=0,m_z=0,led=0,time=0,cs=0):
+     self.a_x=a_x
+     self.a_y=a_y
+     self.a_z=a_z
+     self.g_x=g_x
+     self.g_y=g_y
+     self.g_z=g_z
+     self.m_x=m_x
+     self.m_y=m_y
+     self.m_z=m_z
+     self.led = led
+     self.time = UInt32(time)
+     self.cs = cs
+#packet=collections.namedtuple('packet','a_x time')
+#@returns( type(arduino_packet()))
+@returns(Tuple[int,int,int,int,int,int,UInt32,Tuple[Tuple[int,int,int]]])
+def process(value):
+  arduino_in = struct.unpack("&lt;hhhhhhhhhbIB", bytearray(value))
+  ap = arduino_packet(*arduino_in)
+  #return (a[0],a[1],a[2],a[3],a[4],a[5],a[6],a[7],a[8],a[9],a[10],a[11],len(a))
+  #return arduino_packet(*arduino_in)
+  #m_tuple = Tuple.Create(ap.m_x,ap.m_y,ap.m_z)
+  return Tuple.Create(ap.a_x,ap.a_y,ap.a_z,ap.g_x,ap.g_y,ap.g_z,ap.time,Tuple.Create(ap.m_x,ap.m_y,ap.m_z))
+  </ipy:Script>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item1</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item2</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item3</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item4</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item5</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item6</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item7</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Rest</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item1</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item1</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item2</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="MemberSelector">
+                  <Selector>Item3</Selector>
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="Combinator">
+                  <Combinator xsi:type="rx:Zip" />
+                </Builder>
+              </Expression>
+              <Expression xsi:type="Disable">
+                <Builder xsi:type="io:CsvWriter">
+                  <io:FileName>imu_data.csv</io:FileName>
+                  <io:Append>true</io:Append>
+                  <io:Overwrite>false</io:Overwrite>
+                  <io:Suffix>Timestamp</io:Suffix>
+                  <io:IncludeHeader>false</io:IncludeHeader>
+                </Builder>
+              </Expression>
+            </Nodes>
+            <Edges>
+              <Edge From="0" To="1" Label="Source1" />
+              <Edge From="1" To="2" Label="Source1" />
+              <Edge From="1" To="3" Label="Source1" />
+              <Edge From="1" To="4" Label="Source1" />
+              <Edge From="1" To="5" Label="Source1" />
+              <Edge From="1" To="6" Label="Source1" />
+              <Edge From="1" To="7" Label="Source1" />
+              <Edge From="1" To="8" Label="Source1" />
+              <Edge From="1" To="9" Label="Source1" />
+              <Edge From="2" To="14" Label="Source1" />
+              <Edge From="3" To="14" Label="Source2" />
+              <Edge From="4" To="14" Label="Source3" />
+              <Edge From="5" To="14" Label="Source4" />
+              <Edge From="6" To="14" Label="Source5" />
+              <Edge From="7" To="14" Label="Source6" />
+              <Edge From="8" To="14" Label="Source7" />
+              <Edge From="9" To="10" Label="Source1" />
+              <Edge From="10" To="11" Label="Source1" />
+              <Edge From="10" To="12" Label="Source1" />
+              <Edge From="10" To="13" Label="Source1" />
+              <Edge From="11" To="14" Label="Source8" />
+              <Edge From="12" To="14" Label="Source9" />
+              <Edge From="13" To="14" Label="Source10" />
+              <Edge From="14" To="15" Label="Source1" />
+            </Edges>
+          </Workflow>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>IMU</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:CreateRuntime">
+                <py:PythonHome>C:\Users\Sarvestani\Documents\.venv</py:PythonHome>
+                <py:ScriptPath>C:\Users\Sarvestani\Documents\Bonsai_scripts\bonsaimain.py</py:ScriptPath>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="port:SerialRead">
+                <port:PortName>IMU</port:PortName>
+                <port:Count>24</port:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:ObserveOnGIL" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Set">
+                <py:VariableName>from_arduino</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Eval">
+                <py:Expression>parse_serialdata(from_arduino)</py:Expression>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>t</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>Time</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>a_x</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>acc_x</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>a_y</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>acc_y</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>a_z</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>acc_z</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>g_x</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>gyro_x</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>g_y</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>gyro_y</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>g_z</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>gyro_z</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>m_x</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>mag_x</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>m_y</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>mag_y</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="py:Get">
+                <py:VariableName>m_z</py:VariableName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>mag_z</scr:Name>
+              <scr:Expression>Convert.ToDouble(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Name>Header</scr:Name>
+              <scr:Expression>new(
+it[0] as Time,
+it[1] as acc_x, 
+it[2] as acc_y, 
+it[3] as acc_z, 
+it[4] as gyro_x, 
+it[5] as gyro_y, 
+it[6] as gyro_z, 
+it[7] as mag_x, 
+it[8] as mag_y, 
+it[9] as mag_z) </scr:Expression>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>ID_IMU</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="io:CsvWriter">
+              <io:FileName>Tsh001\\Tsh001_IMU_.csv</io:FileName>
+              <io:ListSeparator />
+              <io:Append>false</io:Append>
+              <io:Overwrite>false</io:Overwrite>
+              <io:Suffix>Timestamp</io:Suffix>
+              <io:IncludeHeader>true</io:IncludeHeader>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="4" To="7" Label="Source1" />
+            <Edge From="4" To="9" Label="Source1" />
+            <Edge From="4" To="11" Label="Source1" />
+            <Edge From="4" To="13" Label="Source1" />
+            <Edge From="4" To="15" Label="Source1" />
+            <Edge From="4" To="17" Label="Source1" />
+            <Edge From="4" To="19" Label="Source1" />
+            <Edge From="4" To="21" Label="Source1" />
+            <Edge From="4" To="23" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="25" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="25" Label="Source2" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="25" Label="Source3" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="25" Label="Source4" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="14" To="25" Label="Source5" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="16" To="25" Label="Source6" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="18" To="25" Label="Source7" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="25" Label="Source8" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="22" To="25" Label="Source9" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="25" Label="Source10" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="29" Label="Source1" />
+            <Edge From="27" To="28" Label="Source1" />
+            <Edge From="28" To="29" Label="Source2" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>MouseAsEye</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="gli:Mouse">
+                <gli:Index xsi:nil="true" />
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>X</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:BufferCount">
+                <rx:Count>5</rx:Count>
+                <rx:Skip>1</rx:Skip>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Add" />
+            <Expression xsi:type="Divide">
+              <Operand xsi:type="FloatProperty">
+                <Value>5</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Y</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:BufferCount">
+                <rx:Count>5</rx:Count>
+                <rx:Skip>1</rx:Skip>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Add" />
+            <Expression xsi:type="Divide">
+              <Operand xsi:type="FloatProperty">
+                <Value>5</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>MousePupil</Name>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="0" To="5" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="9" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="9" Label="Source2" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="11" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.ParameterRange.bonsai">
+        <Count>6</Count>
+        <RangeMin>-1.5</RangeMin>
+        <RangeMax>1.5</RangeMax>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>rand</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="num:Permutation" />
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Horizontal (X) </Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.ParameterRange.bonsai">
+        <Count>2</Count>
+        <RangeMin>0</RangeMin>
+        <RangeMax>0</RangeMax>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>rand2</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="num:Permutation" />
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Vertical (Y) </Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Zip" />
+      </Expression>
+      <Expression xsi:type="rx:CreateObservable">
+        <Name>Stim Juice</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Draw</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="gl:RenderFrame" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:ElementIndex" />
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Index</Selector>
+            </Expression>
+            <Expression xsi:type="Mod">
+              <Operand xsi:type="IntProperty">
+                <Value>4</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+              <Format xsi:nil="true" />
+              <Selector xsi:nil="true" />
+              <Name>cue</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="ColorA" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.DrawCircle.bonsai">
+              <Diameter>0.2</Diameter>
+              <LocationX>0</LocationX>
+              <LocationY>0</LocationY>
+              <Layer>0</Layer>
+              <ColorR>0</ColorR>
+              <ColorG>0.8</ColorG>
+              <ColorB>0.8</ColorB>
+              <ColorA>2</ColorA>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TrialStartGreenCircleDur</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="DueTime" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="gl:Timer">
+                <gl:DueTime>PT1S</gl:DueTime>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:TakeUntil" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Draw</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>CurrentPair</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Item1</Selector>
+            </Expression>
+            <Expression xsi:type="Divide">
+              <Operand xsi:type="FloatProperty">
+                <Value>1</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="GroupWorkflow">
+                <Name>MoveCircle</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="Subtract">
+                      <Operand xsi:type="DoubleProperty">
+                        <Value>-1</Value>
+                      </Operand>
+                    </Expression>
+                    <Expression xsi:type="PropertyMapping">
+                      <PropertyMappings>
+                        <Property Name="RangeBegin" />
+                      </PropertyMappings>
+                    </Expression>
+                    <Expression xsi:type="Add">
+                      <Operand xsi:type="DoubleProperty">
+                        <Value>0</Value>
+                      </Operand>
+                    </Expression>
+                    <Expression xsi:type="PropertyMapping">
+                      <PropertyMappings>
+                        <Property Name="RangeEnd" />
+                      </PropertyMappings>
+                    </Expression>
+                    <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.RangeAnimation.bonsai">
+                      <Duration>0.05</Duration>
+                      <RangeBegin>0</RangeBegin>
+                      <RangeEnd>-1</RangeEnd>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="0" To="3" Label="Source1" />
+                    <Edge From="1" To="2" Label="Source1" />
+                    <Edge From="2" To="5" Label="Source1" />
+                    <Edge From="3" To="4" Label="Source1" />
+                    <Edge From="4" To="5" Label="Source2" />
+                    <Edge From="5" To="6" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+              <Format xsi:nil="true" />
+              <Selector xsi:nil="true" />
+              <Name>go</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="LocationX" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Item2</Selector>
+            </Expression>
+            <Expression xsi:type="Divide">
+              <Operand xsi:type="FloatProperty">
+                <Value>1</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="LocationY" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="gl:RenderFrame" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:ElementIndex" />
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Index</Selector>
+            </Expression>
+            <Expression xsi:type="Mod">
+              <Operand xsi:type="IntProperty">
+                <Value>4</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="ColorR" />
+                <Property Name="ColorG" />
+                <Property Name="ColorB" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.DrawCircle.bonsai">
+              <Diameter>0.2</Diameter>
+              <LocationX>-0.3</LocationX>
+              <LocationY>0</LocationY>
+              <Layer>0</Layer>
+              <ColorR>3</ColorR>
+              <ColorG>3</ColorG>
+              <ColorB>3</ColorB>
+              <ColorA>0.5</ColorA>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>StimStartWhiteCircleDur</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="DueTime" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="gl:Timer">
+                <gl:DueTime>PT1S</gl:DueTime>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:TakeUntil" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Concat" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Delay">
+                <rx:DueTime>PT1S</rx:DueTime>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>EyeMovementEnd</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="DueTime" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>EyeMovementMagThresh</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="Value" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>Pupil Direction for trial</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="GroupWorkflow">
+                      <Name>GreenCircleDur+WhiteCircleDu+time to move eyer</Name>
+                      <Workflow>
+                        <Nodes>
+                          <Expression xsi:type="WorkflowInput">
+                            <Name>Source1</Name>
+                          </Expression>
+                          <Expression xsi:type="WorkflowOutput" />
+                        </Nodes>
+                        <Edges>
+                          <Edge From="0" To="1" Label="Source1" />
+                        </Edges>
+                      </Workflow>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="SubscribeSubject">
+                      <Name>LeftPupil</Name>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Right Pupil</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>X</Selector>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Y</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>StartSession</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:SkipUntil" />
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>EyeMovementBegin</Name>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="DueTime" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="gl:Timer">
+                      <gl:DueTime>PT1S</gl:DueTime>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:SkipUntil" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Skip">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="Value" />
+                  </Expression>
+                  <Expression xsi:type="GroupWorkflow">
+                    <Name>Eye direction for trial</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>Item2</Selector>
+                        </Expression>
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="GroupWorkflow">
+                            <Name>StartPos</Name>
+                            <Workflow>
+                              <Nodes>
+                                <Expression xsi:type="WorkflowInput">
+                                  <Name>Source1</Name>
+                                </Expression>
+                                <Expression xsi:type="WorkflowOutput" />
+                              </Nodes>
+                              <Edges>
+                                <Edge From="0" To="1" Label="Source1" />
+                              </Edges>
+                            </Workflow>
+                          </Builder>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>Item1</Selector>
+                        </Expression>
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="GroupWorkflow">
+                            <Name>CurrentPos</Name>
+                            <Workflow>
+                              <Nodes>
+                                <Expression xsi:type="WorkflowInput">
+                                  <Name>Source1</Name>
+                                </Expression>
+                                <Expression xsi:type="WorkflowOutput" />
+                              </Nodes>
+                              <Edges>
+                                <Edge From="0" To="1" Label="Source1" />
+                              </Edges>
+                            </Workflow>
+                          </Builder>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="Value" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="FloatProperty">
+                            <Value>10</Value>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="GroupWorkflow">
+                            <Name>MagnitudeThresh</Name>
+                            <Workflow>
+                              <Nodes>
+                                <Expression xsi:type="WorkflowInput">
+                                  <Name>Source1</Name>
+                                </Expression>
+                                <Expression xsi:type="WorkflowOutput" />
+                              </Nodes>
+                              <Edges>
+                                <Edge From="0" To="1" Label="Source1" />
+                              </Edges>
+                            </Workflow>
+                          </Builder>
+                        </Expression>
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="Combinator">
+                            <Combinator xsi:type="rx:Zip" />
+                          </Builder>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:CombineLatest" />
+                        </Expression>
+                        <Expression xsi:type="ipy:PythonTransform">
+                          <ipy:Name>Eye direction for trial</ipy:Name>
+                          <ipy:Script>import math
+from System import Tuple
+
+@returns(float)
+# x0 is the position in the last 0.1 seconds of the red dot
+# x1 is the current position
+# We'll calculate the angle, and output it only when there was signifcant movement (high magnitude) between x0 and x1
+def process(value):
+  x0, y0 = value.Item1
+  x1, y1 = value.Item2
+  dx = x1 - x0
+  dy = y1 - y0
+  Thresh = value.Item3
+  magnitude = math.sqrt(dx**2+dy**2)
+
+# Check if the magnitude is smaller than the threshold
+  if magnitude &lt; Thresh or magnitude&gt;100:
+    return 0
+    
+  angle_rad = math.atan2(dy, dx)
+  angle_deg = 360-(math.degrees(angle_rad)+180)
+
+  #return float(angle_deg)
+  return magnitude-Thresh
+</ipy:Script>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="0" To="3" Label="Source1" />
+                        <Edge From="0" To="6" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="2" To="8" Label="Source1" />
+                        <Edge From="3" To="4" Label="Source1" />
+                        <Edge From="4" To="8" Label="Source2" />
+                        <Edge From="5" To="6" Label="Source2" />
+                        <Edge From="6" To="7" Label="Source1" />
+                        <Edge From="7" To="8" Label="Source3" />
+                        <Edge From="8" To="9" Label="Source1" />
+                        <Edge From="9" To="10" Label="Source1" />
+                        <Edge From="10" To="11" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="DueTime" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="gl:Timer">
+                      <gl:DueTime>PT2S</gl:DueTime>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:TakeUntil" />
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="1" To="3" Label="Source1" />
+                  <Edge From="1" To="4" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source2" />
+                  <Edge From="2" To="4" Label="Source2" />
+                  <Edge From="3" To="5" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source2" />
+                  <Edge From="5" To="7" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source2" />
+                  <Edge From="7" To="11" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source2" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="11" To="13" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source2" />
+                  <Edge From="13" To="15" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source2" />
+                  <Edge From="15" To="18" Label="Source1" />
+                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source2" />
+                  <Edge From="18" To="19" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>CurrentPair</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="ipy:PythonTransform">
+                <ipy:Name>Stim direction for trial</ipy:Name>
+                <ipy:Script>import math
+from System import Tuple
+
+@returns(float)
+def process(value):
+  x, y = value
+  angle_rad = math.atan2(y, x)
+  angle_deg = math.degrees(angle_rad)+180
+  return float(angle_deg)
+</ipy:Script>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>AcceptanceAngle</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:CombineLatest" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>Compare Eye and Stim Dir</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="ipy:PythonTransform">
+                    <ipy:Name>Compare Stim, Pupil Direction</ipy:Name>
+                    <ipy:Script>import math
+@returns(bool)
+def process(value):
+  #stim_dir = value.Item2
+  #pupil_dir = value.Item1
+  pupil_dir = value
+  #acceptance_angle = value.Item3
+
+  outcome = False
+
+  # Check for NaN inputs
+  #if math.isnan(stim_dir) or math.isnan(pupil_dir):
+  if math.isnan(pupil_dir):
+    outcome = False
+  elif pupil_dir == 0:
+    outcome = False
+  else:
+    outcome = True
+
+  #diff1 = abs(stim_dir-pupil_dir)
+  #diff2 = abs(360+pupil_dir-stim_dir)
+
+  #dir_diff =min(diff1,diff2)
+
+  #if dir_diff &lt;= acceptance_angle:
+  #  outcome = True
+
+##Now always give juice TODO
+  return outcome
+
+
+</ipy:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>Juice Delivery</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="rx:SkipWhile">
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="WorkflowInput">
+                            <Name>Source1</Name>
+                          </Builder>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>BlinkState_R</Name>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="2" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source2" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="ard:DigitalOutput">
+                      <ard:PortName>Arduino_SyringePump</ard:PortName>
+                      <ard:Pin>8</ard:Pin>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+                    <Format />
+                    <Selector xsi:nil="true" />
+                    <Name>Juice</Name>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:Delay">
+                  <rx:DueTime>PT4S</rx:DueTime>
+                </Combinator>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="GroupWorkflow">
+                <Name>Dont get rid of delay(Connectyed to takeuntill before)</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:TakeUntil" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Delay">
+                <rx:DueTime>PT2S</rx:DueTime>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="GroupWorkflow">
+                <Name>InterTrialDuration</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+            <Expression xsi:type="SubscribeSubject">
+              <Name>AudioFile</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:WithLatestFrom" />
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Item2</Selector>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>StartSession</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:SubscribeWhen" />
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>Playback</Name>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:Mat">
+              <rx:Name>Playback</rx:Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="al:AudioPlayback">
+                <al:DeviceName>Generic Software on Headphones (Realtek(R) Audio)</al:DeviceName>
+                <al:SampleRate>10000</al:SampleRate>
+                <al:State>Playing</al:State>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject">
+              <Name>CurrentPair</Name>
+              <rx:BufferSize xsi:nil="true" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>CurrentPair</Name>
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>LeftorRightAudio</ipy:Name>
+              <ipy:Script>import math
+from System import Tuple
+
+@returns(str)
+def process(value):
+  x, y = value
+  angle_rad = math.atan2(y, x)
+  angle_deg = math.degrees(angle_rad)+180
+
+  if angle_deg==360:
+    filename= str('Stereo_Left.wav')
+  elif angle_deg ==180:
+    filename=str('Stereo_Right.wav')
+  else:
+    filename = str('Stereo_Left.wav')
+
+  return filename
+</ipy:Script>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="FileName" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="al:AudioReader">
+                <al:FileName>Stereo_Left.wav</al:FileName>
+                <al:BufferLength>10</al:BufferLength>
+                <al:SampleRate>10000</al:SampleRate>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>AudioFile</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="al:AudioReader">
+                <al:FileName>greenlight.wav</al:FileName>
+                <al:BufferLength>10</al:BufferLength>
+                <al:SampleRate>10000</al:SampleRate>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Draw</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:SubscribeWhen" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TrialStartGreenCircleDur</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="DueTime" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Timer">
+                <rx:DueTime>PT1S</rx:DueTime>
+                <rx:Period>PT0S</rx:Period>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:TakeUntil" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="al:AudioPlayback">
+                <al:SampleRate>44100</al:SampleRate>
+                <al:State>Playing</al:State>
+              </Combinator>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="7" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="7" Label="Source2" />
+            <Edge From="7" To="11" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="11" Label="Source2" />
+            <Edge From="10" To="52" Label="Source1" />
+            <Edge From="11" To="32" Label="Source1" />
+            <Edge From="12" To="27" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="13" To="19" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="18" To="27" Label="Source2" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="27" Label="Source3" />
+            <Edge From="22" To="23" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="25" Label="Source1" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="27" Label="Source4" />
+            <Edge From="27" To="31" Label="Source1" />
+            <Edge From="28" To="29" Label="Source1" />
+            <Edge From="29" To="30" Label="Source1" />
+            <Edge From="30" To="31" Label="Source2" />
+            <Edge From="31" To="32" Label="Source2" />
+            <Edge From="32" To="33" Label="Source1" />
+            <Edge From="33" To="47" Label="Source1" />
+            <Edge From="34" To="35" Label="Source1" />
+            <Edge From="35" To="38" Label="Source1" />
+            <Edge From="36" To="37" Label="Source1" />
+            <Edge From="37" To="38" Label="Source2" />
+            <Edge From="38" To="42" Label="Source1" />
+            <Edge From="39" To="40" Label="Source1" />
+            <Edge From="40" To="42" Label="Source2" />
+            <Edge From="41" To="42" Label="Source3" />
+            <Edge From="42" To="43" Label="Source1" />
+            <Edge From="43" To="44" Label="Source1" />
+            <Edge From="44" To="45" Label="Source1" />
+            <Edge From="45" To="46" Label="Source1" />
+            <Edge From="46" To="47" Label="Source2" />
+            <Edge From="47" To="48" Label="Source1" />
+            <Edge From="48" To="49" Label="Source1" />
+            <Edge From="49" To="50" Label="Source1" />
+            <Edge From="51" To="52" Label="Source2" />
+            <Edge From="52" To="53" Label="Source1" />
+            <Edge From="53" To="55" Label="Source1" />
+            <Edge From="54" To="55" Label="Source2" />
+            <Edge From="55" To="56" Label="Source1" />
+            <Edge From="57" To="58" Label="Source1" />
+            <Edge From="59" To="60" Label="Source1" />
+            <Edge From="61" To="62" Label="Source1" />
+            <Edge From="62" To="63" Label="Source1" />
+            <Edge From="63" To="64" Label="Source1" />
+            <Edge From="64" To="65" Label="Source1" />
+            <Edge From="66" To="68" Label="Source1" />
+            <Edge From="67" To="68" Label="Source2" />
+            <Edge From="68" To="72" Label="Source1" />
+            <Edge From="69" To="70" Label="Source1" />
+            <Edge From="70" To="71" Label="Source1" />
+            <Edge From="71" To="72" Label="Source2" />
+            <Edge From="72" To="73" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Concat" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Take">
+          <rx:Count>1</rx:Count>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:RepeatCount">
+          <rx:Count>10000</rx:Count>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:ElementIndex" />
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Index</Selector>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="gl:Timer">
+          <gl:DueTime>PT2S</gl:DueTime>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:SubscribeWhen" />
+      </Expression>
+      <Expression xsi:type="WorkflowOutput" />
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="spk:SpinnakerCapture">
+          <spk:Index>1</spk:Index>
+          <spk:ColorProcessing>Default</spk:ColorProcessing>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="cv:FileCapture">
+            <cv:FileName>TSh01_Paris_local\Tsh01_2025-04-22T16_06_51\Tsh01_H_L_2025-04-22T16_06_49.avi</cv:FileName>
+            <cv:PlaybackRate>63</cv:PlaybackRate>
+            <cv:StartPosition>0</cv:StartPosition>
+            <cv:PositionUnits>Frames</cv:PositionUnits>
+            <cv:Loop>false</cv:Loop>
+            <cv:Playing>true</cv:Playing>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="spk:SpinnakerCapture">
+          <spk:Index>0</spk:Index>
+          <spk:ColorProcessing>Default</spk:ColorProcessing>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="cv:FileCapture">
+            <cv:FileName>TSh01_Paris_local\Tsh01_2025-04-22T16_06_51\Tsh01_H_R_2025-04-22T16_06_49.avi</cv:FileName>
+            <cv:PlaybackRate>63</cv:PlaybackRate>
+            <cv:StartPosition>0</cv:StartPosition>
+            <cv:PositionUnits>Frames</cv:PositionUnits>
+            <cv:Loop>false</cv:Loop>
+            <cv:Playing>true</cv:Playing>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:Zip" />
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:WithLatestFrom" />
+      </Expression>
+      <Expression xsi:type="rx:BehaviorSubject">
+        <Name>TTL</Name>
+      </Expression>
+      <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+        <Format xsi:nil="true" />
+        <Selector xsi:nil="true" />
+        <Name>EyeCamera</Name>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="GroupWorkflow">
+          <Name>SaveCameraStats</Name>
+          <Workflow>
+            <Nodes>
+              <Expression xsi:type="WorkflowInput">
+                <Name>Source1</Name>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Item1.ChunkData.FrameID</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="dsp:Difference">
+                  <dsp:Order>1</dsp:Order>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="rx:Accumulate" />
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Timestamp" />
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Value</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Item1.ChunkData.Timestamp</Selector>
+              </Expression>
+              <Expression xsi:type="GroupWorkflow">
+                <Name>FramerateMonitor</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput" TypeArguments="sys:Int64">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="dsp:Difference">
+                        <dsp:Order>1</dsp:Order>
+                      </Combinator>
+                    </Expression>
+                    <Expression xsi:type="scr:ExpressionTransform">
+                      <scr:Expression>1/(it*1e-9)</scr:Expression>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="1" To="2" Label="Source1" />
+                    <Edge From="2" To="3" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Timestamp" />
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Value</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Timestamp.DateTime.Month</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Timestamp.DateTime.Day</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Timestamp.DateTime.Year</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Item2.ChunkData.FrameID</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="dsp:Difference">
+                  <dsp:Order>1</dsp:Order>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="rx:Accumulate" />
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Timestamp" />
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Value</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Item2.ChunkData.Timestamp</Selector>
+              </Expression>
+              <Expression xsi:type="GroupWorkflow">
+                <Name>FramerateMonitor</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput" TypeArguments="sys:Int64">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="dsp:Difference">
+                        <dsp:Order>1</dsp:Order>
+                      </Combinator>
+                    </Expression>
+                    <Expression xsi:type="scr:ExpressionTransform">
+                      <scr:Expression>1/(it*1e-9)</scr:Expression>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="1" To="2" Label="Source1" />
+                    <Edge From="2" To="3" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Timestamp" />
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Value</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Timestamp.DateTime.Month</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Timestamp.DateTime.Day</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Timestamp.DateTime.Year</Selector>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Timestamp.TimeOfDay.TotalMilliseconds</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>AnimalID</Name>
+              </Expression>
+              <Expression xsi:type="Format">
+                <Format>{0}_CameraStats_.csv</Format>
+              </Expression>
+              <Expression xsi:type="PropertyMapping">
+                <PropertyMappings>
+                  <Property Name="FileName" />
+                </PropertyMappings>
+              </Expression>
+              <Expression xsi:type="io:CsvWriter">
+                <io:FileName>Rat012_CameraStats_.csv</io:FileName>
+                <io:Append>false</io:Append>
+                <io:Overwrite>false</io:Overwrite>
+                <io:Suffix>Timestamp</io:Suffix>
+                <io:IncludeHeader>false</io:IncludeHeader>
+              </Expression>
+              <Expression xsi:type="WorkflowOutput" />
+            </Nodes>
+            <Edges>
+              <Edge From="0" To="1" Label="Source1" />
+              <Edge From="0" To="6" Label="Source1" />
+              <Edge From="0" To="16" Label="Source1" />
+              <Edge From="0" To="21" Label="Source1" />
+              <Edge From="1" To="2" Label="Source1" />
+              <Edge From="2" To="3" Label="Source1" />
+              <Edge From="3" To="4" Label="Source1" />
+              <Edge From="4" To="5" Label="Source1" />
+              <Edge From="5" To="8" Label="Source1" />
+              <Edge From="6" To="7" Label="Source1" />
+              <Edge From="7" To="8" Label="Source2" />
+              <Edge From="8" To="9" Label="Source1" />
+              <Edge From="9" To="10" Label="Source1" />
+              <Edge From="9" To="11" Label="Source1" />
+              <Edge From="9" To="12" Label="Source1" />
+              <Edge From="9" To="13" Label="Source1" />
+              <Edge From="9" To="14" Label="Source1" />
+              <Edge From="10" To="15" Label="Source1" />
+              <Edge From="11" To="15" Label="Source2" />
+              <Edge From="12" To="15" Label="Source3" />
+              <Edge From="13" To="15" Label="Source4" />
+              <Edge From="14" To="15" Label="Source5" />
+              <Edge From="15" To="31" Label="Source1" />
+              <Edge From="16" To="17" Label="Source1" />
+              <Edge From="17" To="18" Label="Source1" />
+              <Edge From="18" To="19" Label="Source1" />
+              <Edge From="19" To="20" Label="Source1" />
+              <Edge From="20" To="23" Label="Source1" />
+              <Edge From="21" To="22" Label="Source1" />
+              <Edge From="22" To="23" Label="Source2" />
+              <Edge From="23" To="24" Label="Source1" />
+              <Edge From="24" To="25" Label="Source1" />
+              <Edge From="24" To="26" Label="Source1" />
+              <Edge From="24" To="27" Label="Source1" />
+              <Edge From="24" To="28" Label="Source1" />
+              <Edge From="24" To="29" Label="Source1" />
+              <Edge From="25" To="30" Label="Source1" />
+              <Edge From="26" To="30" Label="Source2" />
+              <Edge From="27" To="30" Label="Source3" />
+              <Edge From="28" To="30" Label="Source4" />
+              <Edge From="29" To="30" Label="Source5" />
+              <Edge From="30" To="31" Label="Source2" />
+              <Edge From="31" To="35" Label="Source1" />
+              <Edge From="32" To="33" Label="Source1" />
+              <Edge From="33" To="34" Label="Source1" />
+              <Edge From="34" To="35" Label="Source2" />
+              <Edge From="35" To="36" Label="Source1" />
+            </Edges>
+          </Workflow>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Item1</Selector>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Image</Selector>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:Flip">
+          <cv:Mode>Horizontal</cv:Mode>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>CameraLeft</Name>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Item2</Selector>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Image</Selector>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="cv:Flip">
+            <cv:Mode>Horizontal</cv:Mode>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>CameraRight</Name>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>ID_HeadLEFT</Name>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="FileName" />
+        </PropertyMappings>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>CameraLeft</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="ffmpeg:VideoWriter">
+          <ffmpeg:FileName>Tsh001\\Tsh001_H_L_.avi</ffmpeg:FileName>
+          <ffmpeg:Suffix>Timestamp</ffmpeg:Suffix>
+          <ffmpeg:Overwrite>false</ffmpeg:Overwrite>
+          <ffmpeg:FrameRate>60</ffmpeg:FrameRate>
+          <ffmpeg:OutputArguments>-c:v h264_nvenc -vsync 0 -2pass 0 -bf:v 0 -qp 24 -preset llhp -b:v 6M -rc:v cbr</ffmpeg:OutputArguments>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>ID_EyeLEFT</Name>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="FileName" />
+        </PropertyMappings>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:Crop">
+          <cv:RegionOfInterest>
+            <cv:X>1260</cv:X>
+            <cv:Y>460</cv:Y>
+            <cv:Width>597</cv:Width>
+            <cv:Height>531</cv:Height>
+          </cv:RegionOfInterest>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="ffmpeg:VideoWriter">
+          <ffmpeg:FileName>Tsh001\\Tsh001_E_L_.avi</ffmpeg:FileName>
+          <ffmpeg:Suffix>Timestamp</ffmpeg:Suffix>
+          <ffmpeg:Overwrite>false</ffmpeg:Overwrite>
+          <ffmpeg:FrameRate>60</ffmpeg:FrameRate>
+          <ffmpeg:OutputArguments>-c:v h264_nvenc -vsync 0 -2pass 0 -bf:v 0 -qp 24 -preset llhp -b:v 6M -rc:v cbr</ffmpeg:OutputArguments>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:ObserveOn">
+          <rx:Scheduler>TaskPoolScheduler</rx:Scheduler>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Slice">
+          <rx:Start>0</rx:Start>
+          <rx:Step>10</rx:Step>
+          <rx:Stop xsi:nil="true" />
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>LiveTrackEllipse</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="cv:ConvertColor">
+                <cv:Conversion>Gray2Bgr</cv:Conversion>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:PredictPose">
+                <dlc:ModelFileName>X:\Experimental_Data\EyeHeadCoupling_RatTS_server\EyeTrackingDLC\DLC_Eye_resnet_50_iteration-0_shuffle-1\snapshot-1800000.pb</dlc:ModelFileName>
+                <dlc:PoseConfigFileName>X:\Experimental_Data\EyeHeadCoupling_RatTS_server\EyeTrackingDLC\DLC_Eye_resnet_50_iteration-0_shuffle-1\pose_cfg.yaml</dlc:PoseConfigFileName>
+                <dlc:MinConfidence>0.5</dlc:MinConfidence>
+                <dlc:ScaleFactor>0.8</dlc:ScaleFactor>
+                <dlc:ColorConversion>Bgr2Rgb</dlc:ColorConversion>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>anterior_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>dorsal_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>posterior_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>ventral_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>anterior_dorsal_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>anterior_ventral_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>posterior_dorsal_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>posterior_ventral_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Ellipse Fitting</ipy:Name>
+              <ipy:Script>import clr
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+from System import Array
+@returns(RotatedRect) # To know more about this return type, go to https://horizongir.github.io/opencv.net/api/OpenCV.Net.RotatedRect.html
+def process(value):
+   points = Array.CreateInstance(int,len(value),2); #Create a 2D array to hold the co-ordinates of 8 points
+   LastValidIndex = None # In case of one or more coordinates are NaN, use the last valid index
+   for i in range(0,len(value)):
+      try:
+        points[i,0]=int(value[i].X)
+        points[i,1]=int(value[i].Y)
+      except ValueError:
+        if LastValidIndex is None:
+            points[i,0]=0
+            points[i,1]=0
+        else:
+            points[i,0]=int(value[LastValidIndex].X)
+            points[i,1]=int(value[LastValidIndex].Y)
+        continue
+      LastValidIndex = i 
+   points_cv = Mat.FromArray(points) # Convert points array to CVHandle object type Mat
+   rct= CV.FitEllipse2(points_cv) # Fit ellipse. This returns rotated rect object.
+   #x = rct.Center
+   return rct</ipy:Script>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Size</Selector>
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Area</ipy:Name>
+              <ipy:Script>import math
+@returns(float)
+def process(value):
+  area = math.pi * value.Width*value.Height
+
+  return area</ipy:Script>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>anterior_eye</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>X</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:FirFilter">
+                <dsp:Anchor>-1</dsp:Anchor>
+                <dsp:Kernel>0.0003,0.0005,0.0009,0.0016,0.0027,0.0045,0.0071,0.0109,0.0159,0.0223,0.03,0.0389,0.0484,0.0579,0.0666,0.0736,0.0781,0.0797,0.0781,0.0736,0.0666,0.0579,0.0484,0.0389,0.03,0.0223,0.0159,0.0109,0.0071,0.0045,0.0027,0.0016,0.0009,0.0005,0.0003</dsp:Kernel>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Y</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:FirFilter">
+                <dsp:Anchor>-1</dsp:Anchor>
+                <dsp:Kernel>0.0003,0.0005,0.0009,0.0016,0.0027,0.0045,0.0071,0.0109,0.0159,0.0223,0.03,0.0389,0.0484,0.0579,0.0666,0.0736,0.0781,0.0797,0.0781,0.0736,0.0666,0.0579,0.0484,0.0389,0.03,0.0223,0.0159,0.0109,0.0071,0.0045,0.0027,0.0016,0.0009,0.0005,0.0003</dsp:Kernel>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  return Point2f(value[0],value[1])</ipy:Script>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>posterior_eye</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>X</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:FirFilter">
+                <dsp:Anchor>-1</dsp:Anchor>
+                <dsp:Kernel>0.0003,0.0005,0.0009,0.0016,0.0027,0.0045,0.0071,0.0109,0.0159,0.0223,0.03,0.0389,0.0484,0.0579,0.0666,0.0736,0.0781,0.0797,0.0781,0.0736,0.0666,0.0579,0.0484,0.0389,0.03,0.0223,0.0159,0.0109,0.0071,0.0045,0.0027,0.0016,0.0009,0.0005,0.0003</dsp:Kernel>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Y</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:FirFilter">
+                <dsp:Anchor>-1</dsp:Anchor>
+                <dsp:Kernel>0.0003,0.0005,0.0009,0.0016,0.0027,0.0045,0.0071,0.0109,0.0159,0.0223,0.03,0.0389,0.0484,0.0579,0.0666,0.0736,0.0781,0.0797,0.0781,0.0736,0.0666,0.0579,0.0484,0.0389,0.03,0.0223,0.0159,0.0109,0.0071,0.0045,0.0027,0.0016,0.0009,0.0005,0.0003</dsp:Kernel>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  return Point2f(value[0],value[1])</ipy:Script>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>AP Axis</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+              <Format xsi:nil="true" />
+              <Selector xsi:nil="true" />
+              <Name>Origin_L</Name>
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Origin</ipy:Name>
+              <ipy:Description />
+              <ipy:Script>#def intersection(x1,y1,x2,y2,x3,y3,x4,y4):
+#  x = ((x1*y2-y1*x2)*(x3-x4) - (x1-x2)*(x3*y4-y3*x4))/((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4))
+#  y = ((x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4))/((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4))
+#  return x,y
+import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  x1=value[0].X
+  y1=value[0].Y
+  x2=value[1].X
+  y2=value[1].Y
+  #x3=value[2].X
+  #y3=value[2].Y
+  #x4=value[3].X
+  #y4=value[3].Y
+ # try:
+ #   x = ((x1*y2-y1*x2)*(x3-x4)-(x1-x2)*(x3*y4-y3*x4))/((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4))
+ #   y = ((x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4))/((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4))
+ #   return Point2f(x,y)
+ # except ValueError or ZeroDivisionError:
+ #   return Point2f(0,0)
+ # return Point2f(0,0)
+
+  try:
+    x = (x1+x2)/2;
+    y = (y1+y2)/2;
+    return Point2f(x,y)
+  except ValueError or ZeroDivisionError:
+    return Point2f(float("nan"),float("nan"))
+  return Point2f(float("nan"),float("nan"))</ipy:Script>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>NaNFilter</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="ipy:PythonTransform">
+                    <ipy:Script>import math
+@returns(bool)
+def process(value):
+  if math.isnan(value.X) or math.isnan(value.Y) :
+      return False
+  else:
+      return True</ipy:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:CombineLatest" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  if math.isnan(value.Item1.X) or math.isnan(value.Item1.Y):
+      return value.Item2
+  else:
+      return value.Item1</ipy:Script>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Center</Selector>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+              <Format xsi:nil="true" />
+              <Selector xsi:nil="true" />
+              <Name>Center_L</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Eye-Centered Center</ipy:Name>
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  ox = value[0].X
+  oy = value[0].Y
+  cx = value[1].X
+  cy = value[1].Y
+  x = cx-ox
+  y = cy-oy
+  if(math.isnan(x) or math.isnan(y)):
+      return Point2f(float("nan"),float("nan"))
+  else:
+      return Point2f(x,y)
+
+      </ipy:Script>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>ventral_eye</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>dorsal_eye</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+#@returns(Point2f)
+@returns(float)
+def process(value):
+  dx,dy = value.Item1.X,value.Item1.Y
+  vx,vy = value.Item2.X,value.Item2.Y
+  distance = math.sqrt((dx-vx)**2+(dy-vy)**2)
+  #distance = abs(dy-vy)
+  return distance</ipy:Script>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>VD</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDF</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:CombineLatest" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import math
+@returns(float)
+def process(value):
+  if math.isnan(value.Item1):
+      a = value.Item2
+      return a
+  else:
+      return value.Item1</ipy:Script>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>VDdistance</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="rx:Condition">
+                <Name>NaNFilter</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="ipy:PythonTransform">
+                      <ipy:Script>import math
+@returns(bool)
+def process(value):
+  if math.isnan(value.X) or math.isnan(value.Y) :
+      return False
+  else:
+      return True</ipy:Script>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="1" To="2" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VD</Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>NaNFilter</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="ipy:PythonTransform">
+                    <ipy:Script>import math
+@returns(bool)
+def process(value):
+  if math.isnan(value):
+      return False
+  else:
+      return True</ipy:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>VDF</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDdistance</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDdistance</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:Difference">
+                <dsp:Order>1</dsp:Order>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDThreshold</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDDIfferenceThreshold</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:CombineLatest" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(bool)
+def process(value):
+   if math.isnan(float(value[1])):
+        vdth = 100
+   else:
+        vdth = value[1]
+   if math.isnan(float(value[2])):
+        diffth = 7
+   else:
+        diffth = value[2]
+   if (value[0].Item1&lt;vdth) or abs(value[0].Item2)&gt;diffth:
+      return True
+   else:
+      return False</ipy:Script>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>BlinkState</Name>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="2" To="5" Label="Source1" />
+            <Edge From="2" To="7" Label="Source1" />
+            <Edge From="2" To="9" Label="Source1" />
+            <Edge From="2" To="11" Label="Source1" />
+            <Edge From="2" To="13" Label="Source1" />
+            <Edge From="2" To="15" Label="Source1" />
+            <Edge From="2" To="17" Label="Source1" />
+            <Edge From="2" To="23" Label="Source1" />
+            <Edge From="2" To="31" Label="Source1" />
+            <Edge From="2" To="52" Label="Source1" />
+            <Edge From="2" To="54" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="19" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="19" Label="Source2" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="19" Label="Source3" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="19" Label="Source4" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="19" Label="Source5" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="14" To="19" Label="Source6" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="16" To="19" Label="Source7" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="18" To="19" Label="Source8" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="20" To="46" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="22" To="50" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="25" Label="Source1" />
+            <Edge From="24" To="27" Label="Source1" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="29" Label="Source1" />
+            <Edge From="27" To="28" Label="Source1" />
+            <Edge From="28" To="29" Label="Source2" />
+            <Edge From="29" To="30" Label="Source1" />
+            <Edge From="30" To="39" Label="Source1" />
+            <Edge From="31" To="32" Label="Source1" />
+            <Edge From="32" To="33" Label="Source1" />
+            <Edge From="32" To="35" Label="Source1" />
+            <Edge From="33" To="34" Label="Source1" />
+            <Edge From="34" To="37" Label="Source1" />
+            <Edge From="35" To="36" Label="Source1" />
+            <Edge From="36" To="37" Label="Source2" />
+            <Edge From="37" To="38" Label="Source1" />
+            <Edge From="38" To="39" Label="Source2" />
+            <Edge From="39" To="40" Label="Source1" />
+            <Edge From="40" To="41" Label="Source1" />
+            <Edge From="41" To="42" Label="Source1" />
+            <Edge From="42" To="43" Label="Source1" />
+            <Edge From="42" To="44" Label="Source1" />
+            <Edge From="43" To="44" Label="Source2" />
+            <Edge From="44" To="45" Label="Source1" />
+            <Edge From="45" To="48" Label="Source1" />
+            <Edge From="46" To="47" Label="Source1" />
+            <Edge From="47" To="48" Label="Source2" />
+            <Edge From="48" To="49" Label="Source1" />
+            <Edge From="49" To="50" Label="Source2" />
+            <Edge From="50" To="51" Label="Source1" />
+            <Edge From="52" To="53" Label="Source1" />
+            <Edge From="53" To="56" Label="Source1" />
+            <Edge From="54" To="55" Label="Source1" />
+            <Edge From="55" To="56" Label="Source2" />
+            <Edge From="56" To="57" Label="Source1" />
+            <Edge From="57" To="58" Label="Source1" />
+            <Edge From="58" To="60" Label="Source1" />
+            <Edge From="59" To="60" Label="Source2" />
+            <Edge From="60" To="61" Label="Source1" />
+            <Edge From="61" To="62" Label="Source1" />
+            <Edge From="64" To="65" Label="Source1" />
+            <Edge From="65" To="66" Label="Source1" />
+            <Edge From="67" To="70" Label="Source1" />
+            <Edge From="68" To="69" Label="Source1" />
+            <Edge From="69" To="70" Label="Source2" />
+            <Edge From="70" To="73" Label="Source1" />
+            <Edge From="71" To="73" Label="Source2" />
+            <Edge From="72" To="73" Label="Source3" />
+            <Edge From="73" To="74" Label="Source1" />
+            <Edge From="74" To="75" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Item2</Selector>
+      </Expression>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>LeftPupil</Name>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="MemberSelector">
+          <Selector>X</Selector>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="MemberSelector">
+          <Selector>Y</Selector>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:Zip" />
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:Skip">
+            <rx:Count>1</rx:Count>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:Zip" />
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="ipy:PythonTransform">
+          <ipy:Name>Eye Movement</ipy:Name>
+          <ipy:Script>import math
+@returns(float)
+def process(value):
+  pre_x,pre_y = value.Item1
+  x,y         = value.Item2
+  dx = x - pre_x
+  dy = y - pre_y
+  magnitude = math.sqrt(dx**2+dy**2)
+  return magnitude</ipy:Script>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="rx:BehaviorSubject">
+          <Name>EM</Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Item1</Selector>
+      </Expression>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>LeftPupilArea</Name>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
+          <Name>MousePupil</Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="ipy:PythonTransform">
+          <ipy:Script>import clr
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  x = value.Item1
+  y = value.Item2
+  return Point2f(x,y)</ipy:Script>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="rx:PublishSubject">
+          <Name>LeftPupil</Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>ID_HeadRIGHT</Name>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="FileName" />
+        </PropertyMappings>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>CameraRight</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="ffmpeg:VideoWriter">
+          <ffmpeg:FileName>Tsh001\\Tsh001_H_R_.avi</ffmpeg:FileName>
+          <ffmpeg:Suffix>Timestamp</ffmpeg:Suffix>
+          <ffmpeg:Overwrite>false</ffmpeg:Overwrite>
+          <ffmpeg:FrameRate>60</ffmpeg:FrameRate>
+          <ffmpeg:OutputArguments>-c:v h264_nvenc -vsync 0 -2pass 0 -bf:v 0 -qp 24 -preset llhp -b:v 6M -rc:v cbr</ffmpeg:OutputArguments>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>ID_EyeRIGHT</Name>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="FileName" />
+        </PropertyMappings>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:Crop">
+          <cv:RegionOfInterest>
+            <cv:X>1273</cv:X>
+            <cv:Y>657</cv:Y>
+            <cv:Width>576</cv:Width>
+            <cv:Height>529</cv:Height>
+          </cv:RegionOfInterest>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="ffmpeg:VideoWriter">
+          <ffmpeg:FileName>Tsh001\\Tsh001_E_R_.avi</ffmpeg:FileName>
+          <ffmpeg:Suffix>Timestamp</ffmpeg:Suffix>
+          <ffmpeg:Overwrite>false</ffmpeg:Overwrite>
+          <ffmpeg:FrameRate>60</ffmpeg:FrameRate>
+          <ffmpeg:OutputArguments>-c:v h264_nvenc -vsync 0 -2pass 0 -bf:v 0 -qp 24 -preset llhp -b:v 6M -rc:v cbr</ffmpeg:OutputArguments>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:ObserveOn">
+          <rx:Scheduler>TaskPoolScheduler</rx:Scheduler>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Slice">
+          <rx:Start>0</rx:Start>
+          <rx:Step>5</rx:Step>
+          <rx:Stop xsi:nil="true" />
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>LiveTrackEllipse</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="cv:ConvertColor">
+                <cv:Conversion>Gray2Bgr</cv:Conversion>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:PredictPose">
+                <dlc:ModelFileName>X:\Experimental_Data\EyeHeadCoupling_RatTS_server\EyeTrackingDLC\DLC_Eye_resnet_50_iteration-0_shuffle-1\snapshot-1800000.pb</dlc:ModelFileName>
+                <dlc:PoseConfigFileName>X:\Experimental_Data\EyeHeadCoupling_RatTS_server\EyeTrackingDLC\DLC_Eye_resnet_50_iteration-0_shuffle-1\pose_cfg.yaml</dlc:PoseConfigFileName>
+                <dlc:MinConfidence>0.6</dlc:MinConfidence>
+                <dlc:ScaleFactor>0.8</dlc:ScaleFactor>
+                <dlc:ColorConversion>Bgr2Rgb</dlc:ColorConversion>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>anterior_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>dorsal_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>posterior_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>ventral_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>anterior_dorsal_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>anterior_ventral_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>posterior_dorsal_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>posterior_ventral_pupil</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Ellipse Fitting</ipy:Name>
+              <ipy:Script>import clr
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+from System import Array
+@returns(RotatedRect) # To know more about this return type, go to https://horizongir.github.io/opencv.net/api/OpenCV.Net.RotatedRect.html
+def process(value):
+   points = Array.CreateInstance(int,len(value),2); #Create a 2D array to hold the co-ordinates of 8 points
+   LastValidIndex = None # In case of one or more coordinates are NaN, use the last valid index
+   for i in range(0,len(value)):
+      try:
+        points[i,0]=int(value[i].X)
+        points[i,1]=int(value[i].Y)
+      except ValueError:
+        if LastValidIndex is None:
+            points[i,0]=0
+            points[i,1]=0
+        else:
+            points[i,0]=int(value[LastValidIndex].X)
+            points[i,1]=int(value[LastValidIndex].Y)
+        continue
+      LastValidIndex = i 
+   points_cv = Mat.FromArray(points) # Convert points array to CVHandle object type Mat
+   rct= CV.FitEllipse2(points_cv) # Fit ellipse. This returns rotated rect object.
+   #x = rct.Center
+   return rct</ipy:Script>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Size</Selector>
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Area</ipy:Name>
+              <ipy:Script>import math
+@returns(float)
+def process(value):
+  area = math.pi * value.Width*value.Height
+
+  return area</ipy:Script>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>anterior_eye</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>X</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:FirFilter">
+                <dsp:Anchor>-1</dsp:Anchor>
+                <dsp:Kernel>0.0003,0.0005,0.0009,0.0016,0.0027,0.0045,0.0071,0.0109,0.0159,0.0223,0.03,0.0389,0.0484,0.0579,0.0666,0.0736,0.0781,0.0797,0.0781,0.0736,0.0666,0.0579,0.0484,0.0389,0.03,0.0223,0.0159,0.0109,0.0071,0.0045,0.0027,0.0016,0.0009,0.0005,0.0003</dsp:Kernel>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Y</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:FirFilter">
+                <dsp:Anchor>-1</dsp:Anchor>
+                <dsp:Kernel>0.0003,0.0005,0.0009,0.0016,0.0027,0.0045,0.0071,0.0109,0.0159,0.0223,0.03,0.0389,0.0484,0.0579,0.0666,0.0736,0.0781,0.0797,0.0781,0.0736,0.0666,0.0579,0.0484,0.0389,0.03,0.0223,0.0159,0.0109,0.0071,0.0045,0.0027,0.0016,0.0009,0.0005,0.0003</dsp:Kernel>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  return Point2f(value[0],value[1])</ipy:Script>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>posterior_eye</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>X</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:FirFilter">
+                <dsp:Anchor>-1</dsp:Anchor>
+                <dsp:Kernel>0.0003,0.0005,0.0009,0.0016,0.0027,0.0045,0.0071,0.0109,0.0159,0.0223,0.03,0.0389,0.0484,0.0579,0.0666,0.0736,0.0781,0.0797,0.0781,0.0736,0.0666,0.0579,0.0484,0.0389,0.03,0.0223,0.0159,0.0109,0.0071,0.0045,0.0027,0.0016,0.0009,0.0005,0.0003</dsp:Kernel>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Y</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:FirFilter">
+                <dsp:Anchor>-1</dsp:Anchor>
+                <dsp:Kernel>0.0003,0.0005,0.0009,0.0016,0.0027,0.0045,0.0071,0.0109,0.0159,0.0223,0.03,0.0389,0.0484,0.0579,0.0666,0.0736,0.0781,0.0797,0.0781,0.0736,0.0666,0.0579,0.0484,0.0389,0.03,0.0223,0.0159,0.0109,0.0071,0.0045,0.0027,0.0016,0.0009,0.0005,0.0003</dsp:Kernel>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  return Point2f(value[0],value[1])</ipy:Script>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="rx:BehaviorSubject">
+                <Name>AP Axis</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+              <Format xsi:nil="true" />
+              <Selector xsi:nil="true" />
+              <Name>Origin_R</Name>
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Origin</ipy:Name>
+              <ipy:Description />
+              <ipy:Script>#def intersection(x1,y1,x2,y2,x3,y3,x4,y4):
+#  x = ((x1*y2-y1*x2)*(x3-x4) - (x1-x2)*(x3*y4-y3*x4))/((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4))
+#  y = ((x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4))/((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4))
+#  return x,y
+import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  x1=value[0].X
+  y1=value[0].Y
+  x2=value[1].X
+  y2=value[1].Y
+  #x3=value[2].X
+  #y3=value[2].Y
+  #x4=value[3].X
+  #y4=value[3].Y
+ # try:
+ #   x = ((x1*y2-y1*x2)*(x3-x4)-(x1-x2)*(x3*y4-y3*x4))/((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4))
+ #   y = ((x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4))/((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4))
+ #   return Point2f(x,y)
+ # except ValueError or ZeroDivisionError:
+ #   return Point2f(0,0)
+ # return Point2f(0,0)
+
+  try:
+    x = (x1+x2)/2;
+    y = (y1+y2)/2;
+    return Point2f(x,y)
+  except ValueError or ZeroDivisionError:
+    return Point2f(float("nan"),float("nan"))
+  return Point2f(float("nan"),float("nan"))</ipy:Script>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>NaNFilter</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="ipy:PythonTransform">
+                    <ipy:Script>import math
+@returns(bool)
+def process(value):
+  if math.isnan(value.X) or math.isnan(value.Y) :
+      return False
+  else:
+      return True</ipy:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:CombineLatest" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  if math.isnan(value.Item1.X) or math.isnan(value.Item1.Y):
+      return value.Item2
+  else:
+      return value.Item1</ipy:Script>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Center</Selector>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+              <Format xsi:nil="true" />
+              <Selector xsi:nil="true" />
+              <Name>Center_R</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Name>Eye-Centered Center</ipy:Name>
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(Point2f)
+def process(value):
+  ox = value[0].X
+  oy = value[0].Y
+  cx = value[1].X
+  cy = value[1].Y
+  x = cx-ox
+  y = cy-oy
+  if(math.isnan(x) or math.isnan(y)):
+      return Point2f(float("nan"),float("nan"))
+  else:
+      return Point2f(x,y)
+
+      </ipy:Script>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>ventral_eye</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dlc:GetBodyPart">
+                <dlc:Name>dorsal_eye</dlc:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Position</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+#@returns(Point2f)
+@returns(float)
+def process(value):
+  dx,dy = value.Item1.X,value.Item1.Y
+  vx,vy = value.Item2.X,value.Item2.Y
+  distance = math.sqrt((dx-vx)**2+(dy-vy)**2)
+  #distance = abs(dy-vy)
+  return distance</ipy:Script>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>VD_R</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDF_R</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:CombineLatest" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import math
+@returns(float)
+def process(value):
+  if math.isnan(value.Item1):
+      a = value.Item2
+      return a
+  else:
+      return value.Item1</ipy:Script>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>VDdistance_R</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="rx:Condition">
+                <Name>NaNFilter</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="ipy:PythonTransform">
+                      <ipy:Script>import math
+@returns(bool)
+def process(value):
+  if math.isnan(value.X) or math.isnan(value.Y) :
+      return False
+  else:
+      return True</ipy:Script>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                    <Edge From="1" To="2" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VD_R</Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>NaNFilter</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="ipy:PythonTransform">
+                    <ipy:Script>import math
+@returns(bool)
+def process(value):
+  if math.isnan(value):
+      return False
+  else:
+      return True</ipy:Script>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>VDF_R</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDdistance_R</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDdistance_R</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="dsp:Difference">
+                <dsp:Order>1</dsp:Order>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDThreshold</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>VDDIfferenceThreshold</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:CombineLatest" />
+            </Expression>
+            <Expression xsi:type="ipy:PythonTransform">
+              <ipy:Script>import clr
+import math
+clr.AddReference("OpenCV.Net")
+from OpenCV.Net import *
+@returns(bool)
+def process(value):
+   if math.isnan(float(value[1])):
+        vdth = 100
+   else:
+        vdth = value[1]
+   if math.isnan(float(value[2])):
+        diffth = 7
+   else:
+        diffth = value[2]
+   if (value[0].Item1&lt;vdth) or abs(value[0].Item2)&gt;diffth:
+      return True
+   else:
+      return False</ipy:Script>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>BlinkState_R</Name>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="2" To="5" Label="Source1" />
+            <Edge From="2" To="7" Label="Source1" />
+            <Edge From="2" To="9" Label="Source1" />
+            <Edge From="2" To="11" Label="Source1" />
+            <Edge From="2" To="13" Label="Source1" />
+            <Edge From="2" To="15" Label="Source1" />
+            <Edge From="2" To="17" Label="Source1" />
+            <Edge From="2" To="23" Label="Source1" />
+            <Edge From="2" To="31" Label="Source1" />
+            <Edge From="2" To="52" Label="Source1" />
+            <Edge From="2" To="54" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="19" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="19" Label="Source2" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="19" Label="Source3" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="19" Label="Source4" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="19" Label="Source5" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="14" To="19" Label="Source6" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="16" To="19" Label="Source7" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="18" To="19" Label="Source8" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="20" To="46" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="22" To="50" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="25" Label="Source1" />
+            <Edge From="24" To="27" Label="Source1" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="29" Label="Source1" />
+            <Edge From="27" To="28" Label="Source1" />
+            <Edge From="28" To="29" Label="Source2" />
+            <Edge From="29" To="30" Label="Source1" />
+            <Edge From="30" To="39" Label="Source1" />
+            <Edge From="31" To="32" Label="Source1" />
+            <Edge From="32" To="33" Label="Source1" />
+            <Edge From="32" To="35" Label="Source1" />
+            <Edge From="33" To="34" Label="Source1" />
+            <Edge From="34" To="37" Label="Source1" />
+            <Edge From="35" To="36" Label="Source1" />
+            <Edge From="36" To="37" Label="Source2" />
+            <Edge From="37" To="38" Label="Source1" />
+            <Edge From="38" To="39" Label="Source2" />
+            <Edge From="39" To="40" Label="Source1" />
+            <Edge From="40" To="41" Label="Source1" />
+            <Edge From="41" To="42" Label="Source1" />
+            <Edge From="42" To="43" Label="Source1" />
+            <Edge From="42" To="44" Label="Source1" />
+            <Edge From="43" To="44" Label="Source2" />
+            <Edge From="44" To="45" Label="Source1" />
+            <Edge From="45" To="48" Label="Source1" />
+            <Edge From="46" To="47" Label="Source1" />
+            <Edge From="47" To="48" Label="Source2" />
+            <Edge From="48" To="49" Label="Source1" />
+            <Edge From="49" To="50" Label="Source2" />
+            <Edge From="50" To="51" Label="Source1" />
+            <Edge From="52" To="53" Label="Source1" />
+            <Edge From="53" To="56" Label="Source1" />
+            <Edge From="54" To="55" Label="Source1" />
+            <Edge From="55" To="56" Label="Source2" />
+            <Edge From="56" To="57" Label="Source1" />
+            <Edge From="57" To="58" Label="Source1" />
+            <Edge From="58" To="60" Label="Source1" />
+            <Edge From="59" To="60" Label="Source2" />
+            <Edge From="60" To="61" Label="Source1" />
+            <Edge From="61" To="62" Label="Source1" />
+            <Edge From="64" To="65" Label="Source1" />
+            <Edge From="65" To="66" Label="Source1" />
+            <Edge From="67" To="70" Label="Source1" />
+            <Edge From="68" To="69" Label="Source1" />
+            <Edge From="69" To="70" Label="Source2" />
+            <Edge From="70" To="73" Label="Source1" />
+            <Edge From="71" To="73" Label="Source2" />
+            <Edge From="72" To="73" Label="Source3" />
+            <Edge From="73" To="74" Label="Source1" />
+            <Edge From="74" To="75" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Item2</Selector>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="GroupWorkflow">
+          <Name>LiveTrackOld</Name>
+          <Workflow>
+            <Nodes>
+              <Expression xsi:type="WorkflowInput">
+                <Name>Source1</Name>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="cv:ConvertColor">
+                  <cv:Conversion>Gray2Bgr</cv:Conversion>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="dlc:PredictPose">
+                  <dlc:ModelFileName>X:\Experimental_Animals\Rat_Server\EyeTracking\DLC_Eye_resnet_50_iteration-0_shuffle-1\snapshot-1500000.pb</dlc:ModelFileName>
+                  <dlc:PoseConfigFileName>X:\Experimental_Animals\Rat_Server\EyeTracking\DLC_Eye_resnet_50_iteration-0_shuffle-1\pose_cfg.yaml</dlc:PoseConfigFileName>
+                  <dlc:MinConfidence>0.5</dlc:MinConfidence>
+                  <dlc:ScaleFactor>0.5</dlc:ScaleFactor>
+                  <dlc:ColorConversion>Bgr2Rgb</dlc:ColorConversion>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="dlc:GetBodyPart">
+                  <dlc:Name>anterior_pupil</dlc:Name>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Position</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="dlc:GetBodyPart">
+                  <dlc:Name>dorsal_pupil</dlc:Name>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Position</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="dlc:GetBodyPart">
+                  <dlc:Name>posterior_pupil</dlc:Name>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Position</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="dlc:GetBodyPart">
+                  <dlc:Name>ventral_pupil</dlc:Name>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Position</Selector>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Zip" />
+              </Expression>
+              <Expression xsi:type="Add" />
+              <Expression xsi:type="MemberSelector">
+                <Selector>X</Selector>
+              </Expression>
+              <Expression xsi:type="Divide">
+                <Operand xsi:type="FloatProperty">
+                  <Value>4</Value>
+                </Operand>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:BufferCount">
+                  <rx:Count>7</rx:Count>
+                  <rx:Skip>1</rx:Skip>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="Add" />
+              <Expression xsi:type="Divide">
+                <Operand xsi:type="FloatProperty">
+                  <Value>7</Value>
+                </Operand>
+              </Expression>
+              <Expression xsi:type="GroupWorkflow">
+                <Name>Pupil_RIGHT_x</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Y</Selector>
+              </Expression>
+              <Expression xsi:type="Divide">
+                <Operand xsi:type="FloatProperty">
+                  <Value>4</Value>
+                </Operand>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:BufferCount">
+                  <rx:Count>7</rx:Count>
+                  <rx:Skip>1</rx:Skip>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="Add" />
+              <Expression xsi:type="Divide">
+                <Operand xsi:type="FloatProperty">
+                  <Value>7</Value>
+                </Operand>
+              </Expression>
+              <Expression xsi:type="GroupWorkflow">
+                <Name>Pupil_RIGHT_y</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="0" To="1" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:WithLatestFrom" />
+              </Expression>
+              <Expression xsi:type="IncludeWorkflow" Path="BonVision:Logging.LogEvent.bonsai">
+                <Format xsi:nil="true" />
+                <Selector xsi:nil="true" />
+                <Name>Pupil_R</Name>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="cv:CreatePoint2f">
+                  <cv:X>0</cv:X>
+                  <cv:Y>0</cv:Y>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="WorkflowOutput" />
+            </Nodes>
+            <Edges>
+              <Edge From="0" To="1" Label="Source1" />
+              <Edge From="1" To="2" Label="Source1" />
+              <Edge From="2" To="3" Label="Source1" />
+              <Edge From="2" To="5" Label="Source1" />
+              <Edge From="2" To="7" Label="Source1" />
+              <Edge From="2" To="9" Label="Source1" />
+              <Edge From="3" To="4" Label="Source1" />
+              <Edge From="4" To="11" Label="Source1" />
+              <Edge From="5" To="6" Label="Source1" />
+              <Edge From="6" To="11" Label="Source2" />
+              <Edge From="7" To="8" Label="Source1" />
+              <Edge From="8" To="11" Label="Source3" />
+              <Edge From="9" To="10" Label="Source1" />
+              <Edge From="10" To="11" Label="Source4" />
+              <Edge From="11" To="12" Label="Source1" />
+              <Edge From="12" To="13" Label="Source1" />
+              <Edge From="12" To="19" Label="Source1" />
+              <Edge From="13" To="14" Label="Source1" />
+              <Edge From="14" To="15" Label="Source1" />
+              <Edge From="15" To="16" Label="Source1" />
+              <Edge From="16" To="17" Label="Source1" />
+              <Edge From="17" To="18" Label="Source1" />
+              <Edge From="18" To="25" Label="Source1" />
+              <Edge From="19" To="20" Label="Source1" />
+              <Edge From="20" To="21" Label="Source1" />
+              <Edge From="21" To="22" Label="Source1" />
+              <Edge From="22" To="23" Label="Source1" />
+              <Edge From="23" To="24" Label="Source1" />
+              <Edge From="24" To="25" Label="Source2" />
+              <Edge From="25" To="26" Label="Source1" />
+              <Edge From="26" To="27" Label="Source1" />
+              <Edge From="27" To="28" Label="Source1" />
+            </Edges>
+          </Workflow>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>Right Pupil</Name>
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge From="10" To="12" Label="Source1" />
+      <Edge From="11" To="12" Label="Source2" />
+      <Edge From="12" To="13" Label="Source1" />
+      <Edge From="13" To="18" Label="Source1" />
+      <Edge From="14" To="16" Label="Source1" />
+      <Edge From="15" To="16" Label="Source2" />
+      <Edge From="16" To="17" Label="Source1" />
+      <Edge From="17" To="18" Label="Source2" />
+      <Edge From="18" To="19" Label="Source1" />
+      <Edge From="19" To="20" Label="Source1" />
+      <Edge From="20" To="21" Label="Source1" />
+      <Edge From="21" To="22" Label="Source1" />
+      <Edge From="22" To="23" Label="Source1" />
+      <Edge From="23" To="24" Label="Source1" />
+      <Edge From="24" To="26" Label="Source1" />
+      <Edge From="25" To="26" Label="Source2" />
+      <Edge From="26" To="27" Label="Source1" />
+      <Edge From="28" To="29" Label="Source1" />
+      <Edge From="29" To="32" Label="Source1" />
+      <Edge From="30" To="31" Label="Source1" />
+      <Edge From="31" To="32" Label="Source2" />
+      <Edge From="32" To="33" Label="Source1" />
+      <Edge From="33" To="34" Label="Source1" />
+      <Edge From="34" To="35" Label="Source1" />
+      <Edge From="35" To="36" Label="Source1" />
+      <Edge From="35" To="37" Label="Source1" />
+      <Edge From="35" To="41" Label="Source1" />
+      <Edge From="37" To="38" Label="Source1" />
+      <Edge From="38" To="39" Label="Source1" />
+      <Edge From="39" To="40" Label="Source1" />
+      <Edge From="41" To="42" Label="Source1" />
+      <Edge From="42" To="43" Label="Source1" />
+      <Edge From="43" To="44" Label="Source1" />
+      <Edge From="45" To="46" Label="Source1" />
+      <Edge From="46" To="48" Label="Source1" />
+      <Edge From="47" To="48" Label="Source2" />
+      <Edge From="47" To="51" Label="Source1" />
+      <Edge From="49" To="50" Label="Source1" />
+      <Edge From="50" To="52" Label="Source1" />
+      <Edge From="51" To="52" Label="Source2" />
+      <Edge From="52" To="53" Label="Source1" />
+      <Edge From="53" To="54" Label="Source1" />
+      <Edge From="54" To="55" Label="Source1" />
+      <Edge From="55" To="56" Label="Source1" />
+      <Edge From="55" To="65" Label="Source1" />
+      <Edge From="56" To="57" Label="Source1" />
+      <Edge From="57" To="58" Label="Source1" />
+      <Edge From="57" To="59" Label="Source1" />
+      <Edge From="58" To="60" Label="Source1" />
+      <Edge From="59" To="60" Label="Source2" />
+      <Edge From="60" To="61" Label="Source1" />
+      <Edge From="60" To="62" Label="Source2" />
+      <Edge From="61" To="62" Label="Source1" />
+      <Edge From="62" To="63" Label="Source1" />
+      <Edge From="63" To="64" Label="Source1" />
+      <Edge From="65" To="66" Label="Source1" />
+      <Edge From="67" To="68" Label="Source1" />
+      <Edge From="68" To="69" Label="Source1" />
+      <Edge From="70" To="71" Label="Source1" />
+      <Edge From="71" To="73" Label="Source1" />
+      <Edge From="72" To="73" Label="Source2" />
+      <Edge From="72" To="76" Label="Source1" />
+      <Edge From="74" To="75" Label="Source1" />
+      <Edge From="75" To="77" Label="Source1" />
+      <Edge From="76" To="77" Label="Source2" />
+      <Edge From="77" To="78" Label="Source1" />
+      <Edge From="78" To="79" Label="Source1" />
+      <Edge From="79" To="80" Label="Source1" />
+      <Edge From="80" To="81" Label="Source1" />
+      <Edge From="81" To="82" Label="Source1" />
+      <Edge From="82" To="83" Label="Source1" />
+    </Edges>
+  </Workflow>
+</WorkflowBuilder>
